@@ -37,6 +37,7 @@ FILE & CONTEXT RULE:
 
 class QNetworkReply;
 class QNetworkCookieJar;
+class QTimer;
 
 class ChatChecker : public QObject
 {
@@ -100,6 +101,7 @@ private:
 private:
     QNetworkAccessManager m_network;
     QNetworkCookieJar *m_cookieJar;
+    QTimer *m_pollTimer;
 
     QString m_baseUrl;
     QString m_user;

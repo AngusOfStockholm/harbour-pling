@@ -40,6 +40,7 @@ FILE & CONTEXT RULE:
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QTimer>
 
 namespace {
 
@@ -85,7 +86,6 @@ void saveLastSeenIdSetting(int value)
 
 }
 
-
 ChatChecker::ChatChecker(QObject *parent)
     : QObject(parent)
     , m_cookieJar(new QNetworkCookieJar(this))
@@ -107,6 +107,22 @@ ChatChecker::ChatChecker(QObject *parent)
     m_lastSeenId = settings.value(KEY_LAST_SEEN_ID, m_lastSeenId).toInt();
 
     settings.endGroup();
+
+    m_pollTimer = new QTimer(this);
+    m_pollTimer->setInterval(60000); // 60 seconds
+
+    connect(m_pollTimer, &QTimer::timeout, this, [this]() {
+        if (m_busy)
+            return;
+
+        if (!m_loggedIn)
+            return;
+
+        if (m_chat.isEmpty())
+            return;
+
+        checkNow();
+    });
 }
 
 QString ChatChecker::baseUrl() const
@@ -336,6 +352,10 @@ cookie.setExpirationDate(QDateTime::fromTime_t(0));
     setLoggedIn(false);
     setLastSeenId(0);
     setStatus("Session reset");
+
+    if (m_pollTimer->isActive()) {
+        m_pollTimer->stop();
+    }
 }
 
 void ChatChecker::handleLoginReply(QNetworkReply *reply, bool thenCheck)
@@ -355,7 +375,13 @@ void ChatChecker::handleLoginReply(QNetworkReply *reply, bool thenCheck)
 
     if (statusCode == 303) {
         setLoggedIn(true);
+
+        if (!m_pollTimer->isActive()) {
+            m_pollTimer->start();
+        }
+
         setStatus("Login OK");
+
         reply->deleteLater();
 
         if (thenCheck) {
