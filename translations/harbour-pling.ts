@@ -11,15 +11,19 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Show Page 2</source>
+        <source>Pling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>UI Template</source>
+        <source>Test notification from harbour-pling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hello Sailors</source>
+        <source>Send test notification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pull down to send a test notification.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
