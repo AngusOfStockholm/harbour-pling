@@ -37,8 +37,54 @@ FILE & CONTEXT RULE:
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
+
+namespace {
+
+static const char *SETTINGS_GROUP = "ChatChecker";
+static const char *KEY_BASE_URL = "baseUrl";
+static const char *KEY_USER = "user";
+static const char *KEY_CHAT = "chat";
+static const char *KEY_LAST_SEEN_ID = "lastSeenId";
+
+
+
+void saveBaseUrlSetting(const QString &value)
+{
+    QSettings settings("harbour-pling", "harbour-pling");
+    settings.beginGroup(SETTINGS_GROUP);
+    settings.setValue(KEY_BASE_URL, value);
+    settings.endGroup();
+}
+
+void saveUserSetting(const QString &value)
+{
+    QSettings settings("harbour-pling", "harbour-pling");
+    settings.beginGroup(SETTINGS_GROUP);
+    settings.setValue(KEY_USER, value);
+    settings.endGroup();
+}
+
+void saveChatSetting(const QString &value)
+{
+    QSettings settings("harbour-pling", "harbour-pling");
+    settings.beginGroup(SETTINGS_GROUP);
+    settings.setValue(KEY_CHAT, value);
+    settings.endGroup();
+}
+
+void saveLastSeenIdSetting(int value)
+{
+    QSettings settings("harbour-pling", "harbour-pling");
+    settings.beginGroup(SETTINGS_GROUP);
+    settings.setValue(KEY_LAST_SEEN_ID, value);
+    settings.endGroup();
+}
+
+}
+
 
 ChatChecker::ChatChecker(QObject *parent)
     : QObject(parent)
@@ -51,6 +97,16 @@ ChatChecker::ChatChecker(QObject *parent)
     m_network.setCookieJar(m_cookieJar);
     m_chat = "family";
     m_status = "Ready";
+
+    QSettings settings("harbour-pling", "harbour-pling");
+    settings.beginGroup(SETTINGS_GROUP);
+
+    m_baseUrl = settings.value(KEY_BASE_URL, m_baseUrl).toString();
+    m_user = settings.value(KEY_USER, m_user).toString();
+    m_chat = settings.value(KEY_CHAT, m_chat).toString();
+    m_lastSeenId = settings.value(KEY_LAST_SEEN_ID, m_lastSeenId).toInt();
+
+    settings.endGroup();
 }
 
 QString ChatChecker::baseUrl() const
@@ -64,6 +120,7 @@ void ChatChecker::setBaseUrl(const QString &value)
         return;
 
     m_baseUrl = value;
+    saveBaseUrlSetting(m_baseUrl);
     emit baseUrlChanged();
 }
 
@@ -78,6 +135,7 @@ void ChatChecker::setUser(const QString &value)
         return;
 
     m_user = value;
+    saveUserSetting(m_user);
     emit userChanged();
 }
 
@@ -106,6 +164,7 @@ void ChatChecker::setChat(const QString &value)
         return;
 
     m_chat = value;
+    saveChatSetting(m_chat);
     emit chatChanged();
 }
 
@@ -162,6 +221,7 @@ void ChatChecker::setLastSeenId(int value)
         return;
 
     m_lastSeenId = value;
+    saveLastSeenIdSetting(m_lastSeenId);
     emit lastSeenIdChanged();
 }
 
