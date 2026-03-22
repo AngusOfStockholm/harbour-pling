@@ -42,8 +42,12 @@
 TARGET = harbour-pling
 
 CONFIG += sailfishapp
+QT += network
 
-SOURCES += src/harbour-pling.cpp
+SOURCES += src/harbour-pling.cpp \
+    src/chatchecker.cpp
+
+HEADERS += src/chatchecker.h
 
 DISTFILES += qml/harbour-pling.qml \
     qml/cover/CoverPage.qml \
