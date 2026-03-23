@@ -11,14 +11,6 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Pling</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send test notification</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Login and check now</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27,7 +19,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Start polling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop polling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send test notification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -39,7 +47,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Log in, then check one chat manually.</source>
+        <source>Log in, then check one chat manually or with foreground polling.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -76,6 +84,10 @@
     </message>
     <message>
         <source>Busy: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polling active: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

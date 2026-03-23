@@ -51,6 +51,7 @@ class ChatChecker : public QObject
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
     Q_PROPERTY(bool loggedIn READ loggedIn NOTIFY loggedInChanged)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
+    Q_PROPERTY(bool pollingActive READ pollingActive NOTIFY pollingActiveChanged)
 
 public:
     explicit ChatChecker(QObject *parent = nullptr);
@@ -71,21 +72,26 @@ public:
     QString status() const;
     bool loggedIn() const;
     bool busy() const;
+    bool pollingActive() const;
 
     Q_INVOKABLE void login();
     Q_INVOKABLE void checkNow();
     Q_INVOKABLE void loginAndCheckNow();
     Q_INVOKABLE void resetSession();
+    Q_INVOKABLE void startPolling();
+    Q_INVOKABLE void stopPolling();
 
 signals:
     void baseUrlChanged();
     void userChanged();
     void passwordChanged();
     void chatChanged();
+
     void lastSeenIdChanged();
     void statusChanged();
     void loggedInChanged();
     void busyChanged();
+    void pollingActiveChanged();
 
     void notifyRequested(const QString &summaryText, const QString &bodyText);
 

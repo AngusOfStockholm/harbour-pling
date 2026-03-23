@@ -204,6 +204,11 @@ bool ChatChecker::busy() const
     return m_busy;
 }
 
+bool ChatChecker::pollingActive() const
+{
+    return m_pollTimer && m_pollTimer->isActive();
+}
+
 void ChatChecker::setStatus(const QString &value)
 {
     if (m_status == value)
@@ -355,7 +360,38 @@ cookie.setExpirationDate(QDateTime::fromTime_t(0));
 
     if (m_pollTimer->isActive()) {
         m_pollTimer->stop();
+        emit pollingActiveChanged();
     }
+}
+
+void ChatChecker::startPolling()
+{
+    if (!m_pollTimer)
+        return;
+
+    if (m_pollTimer->isActive()) {
+        setStatus("Polling already active");
+        return;
+    }
+
+    m_pollTimer->start();
+    emit pollingActiveChanged();
+    setStatus("Polling started");
+}
+
+void ChatChecker::stopPolling()
+{
+    if (!m_pollTimer)
+        return;
+
+    if (!m_pollTimer->isActive()) {
+        setStatus("Polling already stopped");
+        return;
+    }
+
+    m_pollTimer->stop();
+    emit pollingActiveChanged();
+    setStatus("Polling stopped");
 }
 
 void ChatChecker::handleLoginReply(QNetworkReply *reply, bool thenCheck)
@@ -378,6 +414,7 @@ void ChatChecker::handleLoginReply(QNetworkReply *reply, bool thenCheck)
 
         if (!m_pollTimer->isActive()) {
             m_pollTimer->start();
+            emit pollingActiveChanged();
         }
 
         setStatus("Login OK");

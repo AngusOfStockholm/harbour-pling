@@ -76,6 +76,16 @@ Page {
             }
 
             MenuItem {
+                text: qsTr("Start polling")
+                onClicked: chatChecker.startPolling()
+            }
+
+            MenuItem {
+                text: qsTr("Stop polling")
+                onClicked: chatChecker.stopPolling()
+            }
+
+            MenuItem {
                 text: qsTr("Login")
                 onClicked: chatChecker.login()
             }
@@ -108,7 +118,7 @@ Page {
             Label {
                 x: Theme.horizontalPageMargin
                 width: page.width - 2 * Theme.horizontalPageMargin
-                text: qsTr("Log in, then check one chat manually.")
+                text: qsTr("Log in, then check one chat manually or with foreground polling.")
                 color: Theme.secondaryHighlightColor
                 wrapMode: Text.Wrap
             }
@@ -161,6 +171,13 @@ Page {
                 x: Theme.horizontalPageMargin
                 width: page.width - 2 * Theme.horizontalPageMargin
                 text: qsTr("Busy: %1").arg(chatChecker.busy ? qsTr("yes") : qsTr("no"))
+                wrapMode: Text.Wrap
+            }
+
+            Label {
+                x: Theme.horizontalPageMargin
+                width: page.width - 2 * Theme.horizontalPageMargin
+                text: qsTr("Polling active: %1").arg(chatChecker.pollingActive ? qsTr("yes") : qsTr("no"))
                 wrapMode: Text.Wrap
             }
 
