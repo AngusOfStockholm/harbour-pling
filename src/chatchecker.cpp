@@ -109,7 +109,7 @@ ChatChecker::ChatChecker(QObject *parent)
     settings.endGroup();
 
     m_pollTimer = new QTimer(this);
-    m_pollTimer->setInterval(60000); // 60 seconds
+    m_pollTimer->setInterval(10000); // 10 seconds
 
     connect(m_pollTimer, &QTimer::timeout, this, [this]() {
         if (m_busy)
@@ -478,6 +478,7 @@ void ChatChecker::handlePollReply(QNetworkReply *reply)
 
     const QJsonObject obj = doc.object();
     const int latestMessageId = obj.value("latest_message_id").toInt(-1);
+    const bool hasUnseenFromOthers = obj.value("has_unseen_from_others").toBool(false);
 
     if (latestMessageId < 0) {
         setBusy(false);
@@ -491,11 +492,15 @@ void ChatChecker::handlePollReply(QNetworkReply *reply)
         setLastSeenId(latestMessageId);
 
         if (previousId > 0) {
-            emit notifyRequested("Pling",
-                                 QString("New message in %1 (id %2)")
-                                 .arg(m_chat)
-                                 .arg(latestMessageId));
-            setStatus(QString("New message detected: %1").arg(latestMessageId));
+            if (hasUnseenFromOthers) {
+                emit notifyRequested("Pling",
+                                     QString("New message in %1 (id %2)")
+                                     .arg(m_chat)
+                                     .arg(latestMessageId));
+                setStatus(QString("New message from someone else: %1").arg(latestMessageId));
+            } else {
+                setStatus("New message was your own");
+            }
         } else {
             setStatus(QString("Baseline updated to %1").arg(latestMessageId));
         }
